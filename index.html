@@ -155,11 +155,13 @@
   }
   .hero h1 {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(42px, 8vw, 80px);
+    font-size: clamp(26px, 6vw, 80px);
     font-weight: 800;
-    line-height: 1.05;
+    line-height: 1.1;
     margin-bottom: 24px;
     animation: fadeUp 0.6s ease 0.1s both;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
   .hero h1 .gradient {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--gold) 100%);
@@ -460,9 +462,14 @@
     .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
     .exercises-grid { grid-template-columns: 1fr; }
     .cta-box { padding: 48px 24px; }
-    .hero-btns { flex-direction: column; align-items: center; }
+    .hero-btns { flex-direction: column; align-items: stretch; }
     .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
     nav .nav-cta { display: none; }
+    .container { padding: 0 20px; }
+    .hero-content { padding: 0; }
+  }
+  @media (max-width: 400px) {
+    .hero h1 { font-size: 7.5vw; }
   }
   @media (max-width: 480px) {
     .stats-grid { grid-template-columns: 1fr; gap: 24px; }
