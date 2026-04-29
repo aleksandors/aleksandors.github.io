@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strong Memory – Brain Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0812;
+    --surface: #110f1c;
+    --surface2: #1a1730;
+    --accent: #7c5cfc;
+    --accent2: #c084fc;
+    --gold: #f5c842;
+    --text: #f0eeff;
+    --text-muted: #8b82b0;
+    --border: rgba(124,92,252,0.2);
+    --glow: rgba(124,92,252,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+
+  /* Background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 20%, rgba(124,92,252,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 80% 80%, rgba(192,132,252,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 30% at 60% 10%, rgba(245,200,66,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Stars */
+  .stars {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+  .star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle var(--d) ease-in-out infinite alternate;
+    opacity: 0;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0; transform: scale(0.8); }
+    100% { opacity: var(--o); transform: scale(1.2); }
+  }
+
+  /* Layout */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 16px 24px;
+    background: rgba(10,8,18,0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  nav .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--text);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  nav .logo span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    padding: 10px 22px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 0 80px;
+    position: relative;
+  }
+  .hero-content {
+    text-align: center;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124,92,252,0.12);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-size: 13px;
+    color: var(--accent2);
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge::before {
+    content: '✦';
+    color: var(--gold);
+    font-size: 12px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(42px, 8vw, 80px);
+    font-weight: 800;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero p {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: var(--text-muted);
+    max-width: 540px;
+    margin: 0 auto 48px;
+    font-weight: 300;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s ease 0.3s both;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: white;
+    padding: 16px 36px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: 'Syne', sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 8px 32px rgba(124,92,252,0.4);
+  }
+  .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 48px rgba(124,92,252,0.5);
+  }
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    color: var(--text);
+    padding: 16px 36px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid var(--border);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-secondary:hover {
+    background: var(--glow);
+    transform: translateY(-2px);
+  }
+
+  /* STATS */
+  .stats {
+    padding: 60px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 300;
+  }
+
+  /* SECTION TITLES */
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .section-sub {
+    color: var(--text-muted);
+    text-align: center;
+    font-size: 16px;
+    font-weight: 300;
+    max-width: 500px;
+    margin: 0 auto 64px;
+  }
+
+  /* EXERCISES */
+  .exercises { padding: 100px 0; }
+  .exercises-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+  .exercise-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 32px;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .exercise-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .exercise-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(124,92,252,0.4);
+    box-shadow: 0 24px 64px rgba(124,92,252,0.15);
+  }
+  .exercise-card:hover::before { opacity: 1; }
+
+  .exercise-icon {
+    font-size: 40px;
+    margin-bottom: 20px;
+    display: block;
+    line-height: 1;
+  }
+  .exercise-tag {
+    display: inline-block;
+    background: rgba(124,92,252,0.1);
+    border: 1px solid rgba(124,92,252,0.2);
+    color: var(--accent2);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 50px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .exercise-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .exercise-desc {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+  .exercise-highlight {
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: rgba(124,92,252,0.06);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: var(--accent2);
+    font-style: italic;
+  }
+
+  /* FEATURES */
+  .features { padding: 80px 0; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+  }
+  .feature-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px 24px;
+    text-align: center;
+    transition: transform 0.2s;
+  }
+  .feature-item:hover { transform: translateY(-4px); }
+  .feature-icon { font-size: 32px; margin-bottom: 12px; }
+  .feature-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .feature-desc { color: var(--text-muted); font-size: 13px; font-weight: 300; }
+
+  /* LANGUAGES */
+  .languages { padding: 80px 0; }
+  .lang-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+  .lang-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .lang-item:hover {
+    border-color: rgba(124,92,252,0.5);
+    transform: translateY(-3px);
+  }
+  .lang-flag { font-size: 24px; }
+
+  /* CTA */
+  .cta-section {
+    padding: 100px 0;
+    text-align: center;
+  }
+  .cta-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 32px;
+    padding: 80px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse 50% 50% at 50% 50%, rgba(124,92,252,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cta-box h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .cta-box p {
+    color: var(--text-muted);
+    font-size: 17px;
+    margin-bottom: 40px;
+    font-weight: 300;
+    position: relative;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  footer a {
+    color: var(--accent2);
+    text-decoration: none;
+  }
+  footer a:hover { text-decoration: underline; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .exercises-grid { grid-template-columns: 1fr; }
+    .cta-box { padding: 48px 24px; }
+    .hero-btns { flex-direction: column; align-items: center; }
+    .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
+    nav .nav-cta { display: none; }
+  }
+  @media (max-width: 480px) {
+    .stats-grid { grid-template-columns: 1fr; gap: 24px; }
+    .lang-grid { gap: 10px; }
+    .lang-item { padding: 10px 16px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Stars -->
+<div class="stars" id="stars"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="inner">
+    <a href="#" class="logo">🧠 <span>StrongMemory</span></a>
+    <a href="https://play.google.com/store/apps/details?id=com.aleksandors.strongmemory" class="nav-cta" target="_blank">Download Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-badge">5 science-based memory exercises</div>
+      <h1>Train Your Brain.<br><span class="gradient">Strengthen Your Memory.</span></h1>
+      <p>A free Android app with five unique exercises designed to target every type of memory — from split-second recall to long-term consolidation.</p>
+      <div class="hero-btns">
+        <a href="https://play.google.com/store/apps/details?id=com.aleksandors.strongmemory" class="btn-primary" target="_blank">
+          ▶ Download on Google Play
+        </a>
+        <a href="#exercises" class="btn-secondary">Explore exercises ↓</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="reveal">
+        <div class="stat-num">5</div>
+        <div class="stat-label">Unique exercises</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-num">7</div>
+        <div class="stat-label">Languages supported</div>
+      </div>
+      <div class="reveal">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Free, no subscription</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXERCISES -->
+<section class="exercises" id="exercises">
+  <div class="container">
+    <h2 class="section-title reveal">Five Ways to Train Your Memory</h2>
+    <p class="section-sub reveal">Each exercise targets a different cognitive system. Together, they build a complete memory foundation.</p>
+
+    <div class="exercises-grid">
+
+      <div class="exercise-card reveal">
+        <span class="exercise-icon">⚡</span>
+        <span class="exercise-tag">Iconic Memory</span>
+        <div class="exercise-name">Quick Training</div>
+        <div class="exercise-desc">Your brain captures images like a camera shutter — in fractions of a second. Quick Training sharpens that split-second snapshot. You're shown 1–3 shapes or symbols for a brief moment, then must find them among 12 options. Adjust display time and image count to push your limits.</div>
+        <div class="exercise-highlight">"Trains the photographic memory layer most apps ignore entirely."</div>
+      </div>
+
+      <div class="exercise-card reveal">
+        <span class="exercise-icon">🃏</span>
+        <span class="exercise-tag">Working Memory</span>
+        <div class="exercise-name">Pair Cards</div>
+        <div class="exercise-desc">The classic memory game — reimagined for serious training. Memorize a grid of cards, then flip them to find matching pairs. Customize the number of cards, display time, and choose between pairs or triplets. The more you play, the better your brain holds multiple pieces of information at once.</div>
+        <div class="exercise-highlight">"Working memory is the foundation of focus, learning, and decision-making."</div>
+      </div>
+
+      <div class="exercise-card reveal">
+        <span class="exercise-icon">📍</span>
+        <span class="exercise-tag">Spatial Memory</span>
+        <div class="exercise-name">Object Placement</div>
+        <div class="exercise-desc">Where did I park the car? Where did I leave my keys? Object Placement trains your brain to "photograph" space. Study a layout of objects, then recreate their positions from memory. This targets topographic and episodic memory — the systems that let you navigate and remember real-world locations.</div>
+        <div class="exercise-highlight">"Teaches your brain to build mental maps of the world around you."</div>
+      </div>
+
+      <div class="exercise-card reveal">
+        <span class="exercise-icon">💭</span>
+        <span class="exercise-tag">Verbal-Visual Thinking</span>
+        <div class="exercise-name">Visualization</div>
+        <div class="exercise-desc">Words become pictures. Read a text description of where objects are placed — "motorcycle in top left, bicycle in center, airplane on right" — then recreate the scene from memory without looking. This unique exercise bridges language and spatial reasoning, building the constructive imagination that great memorizers rely on.</div>
+        <div class="exercise-highlight">"You won't find this exercise in any other memory app."</div>
+      </div>
+
+      <div class="exercise-card reveal">
+        <span class="exercise-icon">⏳</span>
+        <span class="exercise-tag">Long-Term Memory</span>
+        <div class="exercise-name">Long Training</div>
+        <div class="exercise-desc">Real memory isn't tested seconds later — it's tested hours later. Choose an image, text, or number sequence to memorize. Then set a reminder for 1 to 12 hours. When the time comes, the app tests you. This simulates how real memories form: through the space between encoding and recall. The only exercise of its kind.</div>
+        <div class="exercise-highlight">"The sleep between learning and testing is where real memory lives."</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="container">
+    <h2 class="section-title reveal">Built to Actually Work</h2>
+    <p class="section-sub reveal">No paywalls. No gimmicks. Just honest training tools.</p>
+    <div class="features-grid">
+      <div class="feature-item reveal">
+        <div class="feature-icon">🆓</div>
+        <div class="feature-title">Completely Free</div>
+        <div class="feature-desc">No subscriptions, no locked levels, no premium tiers.</div>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Progress Tracking</div>
+        <div class="feature-desc">Statistics for every exercise so you can see real improvement.</div>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-icon">⚙️</div>
+        <div class="feature-title">Fully Adjustable</div>
+        <div class="feature-desc">Customize difficulty, timing, and card count for every exercise.</div>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-icon">🌙</div>
+        <div class="feature-title">Dark Interface</div>
+        <div class="feature-desc">Easy on the eyes for evening training sessions.</div>
+      </div>
+      <div class="feature-item reveal">
+        <div class="feature-icon">🔔</div>
+        <div class="feature-title">Smart Reminders</div>
+        <div class="feature-desc">Long Training sends a notification when it's time to recall.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LANGUAGES -->
+<section class="languages">
+  <div class="container">
+    <h2 class="section-title reveal">Available in 7 Languages</h2>
+    <p class="section-sub reveal">The full app experience in your native language.</p>
+    <div class="lang-grid">
+      <div class="lang-item reveal"><span class="lang-flag">🇺🇸</span> English</div>
+      <div class="lang-item reveal"><span class="lang-flag">🇩🇪</span> Deutsch</div>
+      <div class="lang-item reveal"><span class="lang-flag">🇫🇷</span> Français</div>
+      <div class="lang-item reveal"><span class="lang-flag">🇪🇸</span> Español</div>
+      <div class="lang-item reveal"><span class="lang-flag">🇺🇦</span> Українська</div>
+      <div class="lang-item reveal"><span class="lang-flag">🇵🇱</span> Polski</div>
+      <div class="lang-item reveal"><span class="lang-flag">🇷🇺</span> Русский</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-box reveal">
+      <h2>Your memory is trainable.<br><span class="gradient">Start today.</span></h2>
+      <p>Free download. No account needed. Just open and train.</p>
+      <a href="https://play.google.com/store/apps/details?id=com.aleksandors.strongmemory" class="btn-primary" target="_blank">
+        ▶ Download Strong Memory — Free
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p>© 2026 StrongMemory &nbsp;·&nbsp; <a href="https://aleksandors.github.io/strongmemory-privacy/">Privacy Policy</a></p>
+  </div>
+</footer>
+
+<script>
+  // Generate stars
+  const starsEl = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const size = Math.random() * 2 + 0.5;
+    s.style.cssText = `
+      width: ${size}px; height: ${size}px;
+      top: ${Math.random() * 100}%;
+      left: ${Math.random() * 100}%;
+      --d: ${2 + Math.random() * 4}s;
+      --o: ${0.2 + Math.random() * 0.6};
+      animation-delay: ${Math.random() * 4}s;
+    `;
+    starsEl.appendChild(s);
+  }
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
